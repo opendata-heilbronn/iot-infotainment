@@ -3,18 +3,23 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
+#include <Adafruit_Sensor.h>
 #include <DHT.h>
+#include <DHT_U.h>
 #include <ArduinoOTA.h>
 
 #include "config.h"
 
 #define maxBuffer 80
 WiFiClient client;
-#define SERIALOUT 1
+#define SERIALOUT 0
 
+DHT dht(D3, DHT22);
 
 void setup() {
   pinMode(D1, INPUT);
+
+  dht.begin();
 
   if (SERIALOUT) {
     Serial.begin(9800);
@@ -67,6 +72,38 @@ void sendDoorSensor(int doorState) {
   }
 }
 
+void sendTempSensor(float temp, float humidity) {
+  if (client.connect(server, 80)) { 
+    //Serial.println(F("connected to server"));
+    // Make a HTTP request:
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonArray& array = jsonBuffer.createArray();
+
+    JsonObject& sensor1 = array.createNestedObject();
+    sensor1["sensorName"] = "cowo.door.temperature";
+    sensor1["value"] = temp;
+
+    JsonObject& sensor2 = array.createNestedObject();
+    sensor2["sensorName"] = "cowo.door.humidity";
+    sensor2["value"] = humidity;
+
+    String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: "+hostName+"\r\nContent-Type: application/json\r\nConnection: close\r\n");
+
+    int len = array.measureLength();
+    sensorJson += "Content-Length: ";
+    sensorJson += len;
+    sensorJson += "\r\n\r\n";
+    array.printTo(sensorJson);
+
+    client.print(sensorJson);
+    client.stop();
+    if (SERIALOUT) {
+      Serial.println(sensorJson);
+      Serial.println("finished");
+    }
+  }
+}
+
 int lastState;
 
 void readAndSendLocalDoor() {
@@ -81,6 +118,15 @@ void readAndSendLocalDoor() {
       lastState = 0;
       Serial.println("Door close");
     }
+}
+
+unsigned long lastLocalSensorTime = 0;
+
+void readAndSendLocalSensor() {
+    float humidity = dht.readHumidity();
+    float temperature = dht.readTemperature();
+    lastLocalSensorTime = millis();
+    sendTempSensor(temperature, humidity);
 }
 
 bool otaInProgress = false;
@@ -121,5 +167,11 @@ void setupOTA()
 void loop() {
   readAndSendLocalDoor(); 
   ArduinoOTA.handle();
+  
   delay(500);
+  
+  long diff = lastLocalSensorTime - millis();
+  if (abs(diff) > 10*1000) {
+    readAndSendLocalSensor();
+  }
 }
