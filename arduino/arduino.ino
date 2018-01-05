@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <ESP8266WiFi.h>
-#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
@@ -12,7 +12,7 @@
 
 #define maxBuffer 80
 WiFiClient client;
-#define SERIALOUT 0
+#define SERIALOUT 1
 
 DHT dht(D3, DHT22);
 
@@ -45,63 +45,107 @@ void setup() {
 }
 
 void sendDoorSensor(int doorState) {
-  if (client.connect(server, 80)) { 
-    //Serial.println(F("connected to server"));
-    // Make a HTTP request:
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonArray& array = jsonBuffer.createArray();
-
-    JsonObject& sensor1 = array.createNestedObject();
-    sensor1["sensorName"] = "cowo.door";
-    sensor1["value"] = doorState;
-
-    String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: "+hostName+"\r\nContent-Type: application/json\r\nConnection: close\r\n");
-
-    int len = array.measureLength();
-    sensorJson += "Content-Length: ";
-    sensorJson += len;
-    sensorJson += "\r\n\r\n";
-    array.printTo(sensorJson);
-
-    client.print(sensorJson);
-    client.stop();
-    if (SERIALOUT) {
-      Serial.println(sensorJson);
-      Serial.println("finished");
-    }
+  WiFiClientSecure client;
+  Serial.print("connecting to ");
+  Serial.println(host);
+  if (!client.connect(host, httpsPort)) {
+    Serial.println("connection failed");
+    return;
   }
+
+  String url = "api.grundid.de";
+  Serial.print("requesting URL: ");
+  Serial.println(url);
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonArray& array = jsonBuffer.createArray();
+
+  JsonObject& sensor1 = array.createNestedObject();
+  sensor1["sensorName"] = "cowo.door";
+  sensor1["value"] = doorState;
+
+  String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: "+hostName+"\r\nContent-Type: application/json\r\nConnection: close\r\n");
+
+  int len = array.measureLength();
+  sensorJson += "Content-Length: ";
+  sensorJson += len;
+  sensorJson += "\r\n\r\n";
+  array.printTo(sensorJson);
+
+  client.print(sensorJson);
+
+  if(SERIALOUT) {
+    Serial.println("request sent");
+    Serial.println(sensorJson);
+    
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      if (line == "\r") {
+        Serial.println("headers received");
+        break;
+      }
+    }
+    String line = client.readString();
+    Serial.println("reply was:");
+    Serial.println("==========");
+    Serial.println(line);
+    Serial.println("==========");
+    Serial.println("closing connection");
+  }
+  client.stop();
 }
 
 void sendTempSensor(float temp, float humidity) {
-  if (client.connect(server, 80)) { 
-    //Serial.println(F("connected to server"));
-    // Make a HTTP request:
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonArray& array = jsonBuffer.createArray();
-
-    JsonObject& sensor1 = array.createNestedObject();
-    sensor1["sensorName"] = "cowo.door.temperature";
-    sensor1["value"] = temp;
-
-    JsonObject& sensor2 = array.createNestedObject();
-    sensor2["sensorName"] = "cowo.door.humidity";
-    sensor2["value"] = humidity;
-
-    String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: "+hostName+"\r\nContent-Type: application/json\r\nConnection: close\r\n");
-
-    int len = array.measureLength();
-    sensorJson += "Content-Length: ";
-    sensorJson += len;
-    sensorJson += "\r\n\r\n";
-    array.printTo(sensorJson);
-
-    client.print(sensorJson);
-    client.stop();
-    if (SERIALOUT) {
-      Serial.println(sensorJson);
-      Serial.println("finished");
-    }
+  WiFiClientSecure client;
+  Serial.print("connecting to ");
+  Serial.println(host);
+  if (!client.connect(host, httpsPort)) {
+    Serial.println("connection failed");
+    return;
   }
+
+  String url = "api.grundid.de";
+  Serial.print("requesting URL: ");
+  Serial.println(url);
+
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonArray& array = jsonBuffer.createArray();
+
+  JsonObject& sensor1 = array.createNestedObject();
+  sensor1["sensorName"] = "cowo.door.temperature";
+  sensor1["value"] = temp;
+
+  JsonObject& sensor2 = array.createNestedObject();
+  sensor2["sensorName"] = "cowo.door.humidity";
+  sensor2["value"] = humidity;
+
+  String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: "+ hostName +"\r\nContent-Type: application/json\r\nConnection: close\r\n");
+
+  int len = array.measureLength();
+  sensorJson += "Content-Length: ";
+  sensorJson += len;
+  sensorJson += "\r\n\r\n";
+  array.printTo(sensorJson);
+  client.print(sensorJson);
+
+  if(SERIALOUT) {
+    Serial.println("request sent");
+    Serial.println(sensorJson);
+    
+    while (client.connected()) {
+      String line = client.readStringUntil('\n');
+      if (line == "\r") {
+        Serial.println("headers received");
+        break;
+      }
+    }
+    String line = client.readString();
+    Serial.println("reply was:");
+    Serial.println("==========");
+    Serial.println(line);
+    Serial.println("==========");
+    Serial.println("closing connection");
+  }
+  client.stop();
 }
 
 int lastState;
@@ -126,7 +170,15 @@ void readAndSendLocalSensor() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
     lastLocalSensorTime = millis();
-    sendTempSensor(temperature, humidity);
+    if(!(isnan(humidity)) && !(isnan(temperature))) {
+      sendTempSensor(temperature, humidity);
+    }
+    if(SERIALOUT) {
+      Serial.print("Temp: ");
+      Serial.println(temperature);
+      Serial.print("%:    ");
+      Serial.println(humidity);
+    }
 }
 
 bool otaInProgress = false;
@@ -171,7 +223,7 @@ void loop() {
   delay(500);
   
   long diff = lastLocalSensorTime - millis();
-  if (abs(diff) > 10*1000) {
+  if (abs(diff) > 60*1000) {
     readAndSendLocalSensor();
   }
 }
