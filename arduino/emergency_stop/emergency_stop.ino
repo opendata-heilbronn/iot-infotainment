@@ -116,7 +116,7 @@ void loop() {
   readAndSendLocalEmergencyStop();
   ArduinoOTA.handle();
   if (millis() > 60000) {
-    ESP.deepSleep(4294967295);
+    //ESP.deepSleep(4294967295);
   }
   delay(1);
 }
