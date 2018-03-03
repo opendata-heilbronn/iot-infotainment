@@ -1,14 +1,22 @@
 const admin = require('firebase-admin');
+const db = admin.database();
+const moment = require('momentjs');
+
 module.exports = function (req, res) {
     if (req.method === 'POST') {
         req.body.forEach(element => {
             if (element.sensorName === "cowo.door") {
+                const doorState = {
+                    lastChange : Date.now()
+                };
                 if (element.value === 1) {
-                    admin.database().ref("/cowoDoor/state").set("open");
+                    doorState.state = "open";
                 }
                 else {
-                    admin.database().ref("/cowoDoor/state").set("closed");
+                    doorState.state = "closed";
                 }
+                db.ref("/cowoDoor").set(doorState);
+                db.ref("/doorHistory").push().set(doorState);
              }
         });
     }
