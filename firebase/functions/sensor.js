@@ -18,24 +18,24 @@ module.exports = function (req, res) {
                 db.ref("/cowoDoor").set(doorState);
                 db.ref("/doorHistory").push().set(doorState);
             }
-            if (element.sensorName === "cowo.emergency") {
+            if (element.sensorName === "cowoEmergency") {
                 if (element.value === "emergency") {
                     const emergencyState = {
                         lastChange: Date.now()
                     };
-                    db.ref("/buttons/emergencyHistory").push().set(emergencyState);
+                    db.ref("/" + element.sensorName + "\/emergencyHistory").push().set(emergencyState);
                 }
                 if (element.value === "off") {
                     const offState = {
                         lastChange: Date.now()
                     };
-                    db.ref("/buttons/offHistory").push().set(offState);
+                    db.ref("/" + element.sensorName + "\/offHistory").push().set(offState);
                 }
                 if (element.value === "on") {
                     const onState = {
                         lastChange: Date.now()
                     };
-                    db.ref("/buttons/onHistory").push().set(onState);
+                    db.ref("/" + element.sensorName + "\/onHistory").push().set(onState);
                 }
             }
         });
