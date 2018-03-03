@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.7.1",
+    "firebase-functions": "^0.8.1",
+    "lint": "^1.1.2",
+    "moment": "^2.21.0",
     "momentjs": "^2.0.0"
   },
   "private": true

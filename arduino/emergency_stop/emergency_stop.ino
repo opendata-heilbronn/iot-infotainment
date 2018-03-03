@@ -10,44 +10,35 @@
 #define maxBuffer 80
 WiFiClient client;
 
-bool button0 = false;
-bool button1 = false;
-bool button3 = false;
 
 void setup() {
-
+  // init the pins as input
   pinMode(0, INPUT);
   pinMode(1, INPUT);
   pinMode(3, INPUT);
 
-  if (digitalRead(3) == HIGH) {
-    button3 = true;
-  }
-  if (digitalRead(0) == HIGH) {
-    button0 = true;
-  }
-  if (digitalRead(1) == HIGH) {
-    button1 = true;
-  }
-  
+  // start a wifi connection
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(100);
   }
+
+  // set up the ota service
   setupOTA();
 }
 
-void sendEmergencyStop(const char* SensorName) {
+
+void sendEmergencyStop(const char* button) {
   WiFiClientSecure client;
-  if (!client.connect(host, httpsPort)) {
-    return;
-  }
+  // connectto host
+  client.connect(host, httpsPort);
 
   StaticJsonBuffer<200> jsonBuffer;
   JsonArray& array = jsonBuffer.createArray();
 
   JsonObject& sensor1 = array.createNestedObject();
-  sensor1["sensorName"] = SensorName;
+  sensor1["sensorName"] = sensorName;
+  sensor1["value"]= button;
 
   String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: " + hostName + "\r\nContent-Type: application/json\r\nConnection: close\r\n");
 
@@ -60,26 +51,6 @@ void sendEmergencyStop(const char* SensorName) {
   client.stop();
 }
 
-void readAndSendLocalEmergencyStop() {
-
-  if (button3) {
-    sendEmergencyStop("emergency");
-  }
-  if (button0) {
-    sendEmergencyStop("off");
-  }
-  if (button1) {
-    sendEmergencyStop("on");
-  }
-  button3 = false;
-  button0 = false;
-  button1 = false;
-  delay(10);
-}
-
-unsigned long lastLocalSensorTime = 0;
-
-bool otaInProgress = false;
 
 void setupOTA()
 {
@@ -89,34 +60,30 @@ void setupOTA()
   ArduinoOTA.setHostname(("Emergency-ESP " + WiFi.macAddress()).c_str());
   // No authentication by default
   //ArduinoOTA.setPassword(OTA_pass);
-  ArduinoOTA.onStart([]() {
-    otaInProgress = true;
-  });
-  ArduinoOTA.onEnd([]() {
-    otaInProgress = false;
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
-    otaInProgress = false;
-  });
   ArduinoOTA.begin();
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  if (digitalRead(3) == HIGH) {
-    button3 = true;
-  }
-  if (digitalRead(0) == HIGH) {
-    button0 = true;
-  }
-  if (digitalRead(1) == HIGH) {
-    button1 = true;
-  }
-  
-  readAndSendLocalEmergencyStop();
   ArduinoOTA.handle();
-  if (millis() > 60000) {
-    //ESP.deepSleep(4294967295);
+
+  // if button 3 is low, send the request and wait until the button is low againt
+  if (!digitalRead(3)) {
+    sendEmergencyStop("emergency");
+  }
+
+
+  // if button 1 is low, send the request and wait until the button is low againt
+  if (!digitalRead(1)) {
+    sendEmergencyStop("on");
+  }
+
+
+  // if button 0 is low, send the request and wait until the button is low againt
+  if (!digitalRead(0)) {
+    sendEmergencyStop("off");
   }
   delay(1);
 }
+
+
