@@ -1,0 +1,45 @@
+ VCNL4010/4020/3020 Proximity/Ambient Light Sensor
+ library tested with mbed LPC1768 (ARM Cortex-M3 core) on www.mbed.org
+ Version: 1.2  01/2012
+
+ Demonstration #1:
+ Read Proximity on demand and Ambillight on demand in endless loop
+
+ Product ID Revision Register: 33
+ IR LED Current: 20
+
+
+Proxi:  3044 cts        Ambi:   716 cts         Illuminance:  179.00 lx
+Proxi:  3050 cts        Ambi:   714 cts         Illuminance:  178.50 lx
+Proxi:  3000 cts        Ambi:   713 cts         Illuminance:  178.25 lx
+Proxi:  2978 cts        Ambi:   713 cts         Illuminance:  178.25 lx
+Proxi:  3077 cts        Ambi:   712 cts         Illuminance:  178.00 lx
+Proxi:  3034 cts        Ambi:   711 cts         Illuminance:  177.75 lx
+Proxi:  3069 cts        Ambi:   711 cts         Illuminance:  177.75 lx
+Proxi:  3034 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3106 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3053 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3015 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  2977 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  2979 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3012 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  2974 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3003 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3074 cts        Ambi:   708 cts         Illuminance:  177.00 lx
+Proxi:  3078 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3025 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3116 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3072 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  2968 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  2987 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  2988 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3001 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  3014 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3025 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  2978 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  3030 cts        Ambi:   710 cts         Illuminance:  177.50 lx
+Proxi:  3021 cts        Ambi:   709 cts         Illuminance:  177.25 lx
+Proxi:  3009 cts        Ambi:   711 cts         Illuminance:  177.75 lx
+Proxi:  3063 cts        Ambi:   708 cts         Illuminance:  177.00 lx
+Proxi:  3007 cts        Ambi:   706 cts         Illuminance:  176.50 lx
+Proxi:  3055 cts        Ambi:   705 cts         Illuminance:  176.25 lx

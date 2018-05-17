@@ -1,0 +1,61 @@
+
+ VCNL4010/4020/3020 Proximity/Ambient Light Sensor
+ library tested with mbed LPC1768 (ARM Cortex-M3 core) on www.mbed.org
+ Version: 1.2  01/2012
+
+ Demonstration #4:
+ Proximity Measurement and Ambient light Measurement in selftimed mode
+ Proximity with 31 measurements/s, Ambient light with 2 measurement/s
+ Interrupt waiting on proximity value > upper threshold limit
+
+ Product ID Revision Register: 33
+ IR LED Current: 20
+ Upper Threshold Value: 2570 cts
+
+Proxi:  2492 cts        InterruptStatus: 0
+Proxi:  2416 cts        InterruptStatus: 0
+Proxi:  2479 cts        InterruptStatus: 0
+Proxi:  2475 cts        InterruptStatus: 0
+Proxi:  2483 cts        InterruptStatus: 0
+Proxi:  2487 cts        InterruptStatus: 0
+Proxi:  2437 cts        InterruptStatus: 0
+Proxi:  2446 cts        InterruptStatus: 0
+Proxi:  2454 cts        InterruptStatus: 0
+Proxi:  2479 cts        InterruptStatus: 0
+Proxi:  2423 cts        InterruptStatus: 0
+                                               Ambi: 1118
+Proxi:  2483 cts        InterruptStatus: 0
+Proxi:  2436 cts        InterruptStatus: 0
+Proxi:  2407 cts        InterruptStatus: 0
+Proxi:  2437 cts        InterruptStatus: 0
+Proxi:  2407 cts        InterruptStatus: 0
+Proxi:  2438 cts        InterruptStatus: 0
+Proxi:  2451 cts        InterruptStatus: 0
+Proxi:  2489 cts        InterruptStatus: 0
+Proxi:  2432 cts        InterruptStatus: 0
+Proxi:  2504 cts        InterruptStatus: 0
+Proxi:  2504 cts        InterruptStatus: 0
+Proxi:  2443 cts        InterruptStatus: 0
+Proxi:  2424 cts        InterruptStatus: 0
+Proxi:  2428 cts        InterruptStatus: 0
+Proxi:  2481 cts        InterruptStatus: 0
+                                               Ambi: 1075
+Proxi:  2538 cts        InterruptStatus: 0
+Proxi:  2435 cts        InterruptStatus: 0
+Proxi:  2521 cts        InterruptStatus: 0
+Proxi:  2482 cts        InterruptStatus: 0
+Proxi:  2533 cts        InterruptStatus: 0
+Proxi:  2523 cts        InterruptStatus: 0
+Proxi:  2544 cts        InterruptStatus: 0
+Proxi:  2575 cts        InterruptStatus: 1
+Proxi:  2632 cts        InterruptStatus: 1
+Proxi:  2658 cts        InterruptStatus: 1
+Proxi:  2671 cts        InterruptStatus: 1
+Proxi:  2780 cts        InterruptStatus: 1
+Proxi:  2754 cts        InterruptStatus: 1
+Proxi:  2808 cts        InterruptStatus: 1
+Proxi:  2863 cts        InterruptStatus: 1
+Proxi:  2848 cts        InterruptStatus: 1
+                                               Ambi: 779
+Proxi:  2926 cts        InterruptStatus: 1
+Proxi:  2889 cts        InterruptStatus: 1

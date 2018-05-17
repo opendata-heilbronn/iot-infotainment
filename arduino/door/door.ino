@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
@@ -10,6 +9,9 @@
 
 #include "config.h"
 
+#define Open 1
+#define Close 0
+
 #define maxBuffer 80
 WiFiClient client;
 #define SERIALOUT 1
@@ -17,12 +19,12 @@ WiFiClient client;
 DHT dht(D3, DHT22);
 
 void setup() {
-  pinMode(D1, INPUT);
+  pinMode(D1, INPUT_PULLUP);
 
   dht.begin();
 
   if (SERIALOUT) {
-    Serial.begin(9800);
+    Serial.begin(9600);
     Serial.println("Start Platform IO");
   }
   WiFi.begin(ssid, password);
@@ -152,14 +154,14 @@ int lastState;
 
 void readAndSendLocalDoor() {
 
-    if (digitalRead(D1) == LOW && lastState == 0) {
-      sendDoorSensor(1);
-      lastState = 1;
+    if (!digitalRead(D1) && lastState == Close) {
+      sendDoorSensor(Open);
+      lastState = Open;
       Serial.println("Door open");
     }
-    else if (digitalRead(D1) == HIGH && lastState == 1) {
-      sendDoorSensor(0);
-      lastState = 0;
+    else if (digitalRead(D1) && lastState == Open) {
+      sendDoorSensor(Close);
+      lastState = Close;
       Serial.println("Door close");
     }
 }
@@ -181,38 +183,15 @@ void readAndSendLocalSensor() {
     }
 }
 
-bool otaInProgress = false;
-
 void setupOTA()
 {
   // Port defaults to 8266
   ArduinoOTA.setPort(8266);
   // Hostname defaults to MAC address
-  ArduinoOTA.setHostname(("Door-ESP " + WiFi.macAddress()).c_str());
+  ArduinoOTA.setHostname(("Emergency-ESP " + WiFi.macAddress()).c_str());
   // No authentication by default
   //ArduinoOTA.setPassword(OTA_pass);
-  ArduinoOTA.onStart([]() {
-    Serial.println("[OTA] Start");
-    otaInProgress = true;
-  });
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\n[OTA] End");
-    otaInProgress = false;
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("[OTA] Progress: %u%%\r\n", (progress / (total / 100)));
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("[OTA] Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("[OTA] Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("[OTA] Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("[OTA] Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("[OTA] Receive Failed");
-    else if (error == OTA_END_ERROR) Serial.println("[OTA] End Failed");
-    otaInProgress = false;
-  });
   ArduinoOTA.begin();
-  Serial.println("[OTA] ready");
 }
 
 // the loop function runs over and over again forever

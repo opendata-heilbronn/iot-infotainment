@@ -13,9 +13,9 @@ WiFiClient client;
 
 void setup() {
   // init the pins as input
-  pinMode(0, INPUT);
-  pinMode(1, INPUT);
-  pinMode(3, INPUT);
+  pinMode(0, INPUT_PULLUP);
+  pinMode(1, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
 
   // start a wifi connection
   WiFi.begin(ssid, password);
@@ -38,7 +38,7 @@ void sendEmergencyStop(const char* button) {
 
   JsonObject& sensor1 = array.createNestedObject();
   sensor1["sensorName"] = sensorName;
-  sensor1["value"]= button;
+  sensor1["value"] = button;
 
   String sensorJson = String("POST /sensor HTTP/1.0\r\nHost: " + hostName + "\r\nContent-Type: application/json\r\nConnection: close\r\n");
 

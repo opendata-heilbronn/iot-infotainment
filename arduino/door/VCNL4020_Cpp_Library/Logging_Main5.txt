@@ -1,0 +1,45 @@
+ VCNL4010/4020/3020 Proximity/Ambient Light Sensor
+ library tested with mbed LPC1768 (ARM Cortex-M3 core) on www.mbed.org
+ Version: 1.2  01/2012
+
+ Demonstration #5:
+ Read Proximity on demand in an endless loop
+
+ Product ID Revision Register: 33
+ IR LED Current: 20
+
+
+Proxi:  3044 cts       
+Proxi:  3050 cts       
+Proxi:  3000 cts       
+Proxi:  2978 cts       
+Proxi:  3077 cts       
+Proxi:  3034 cts       
+Proxi:  3069 cts       
+Proxi:  3034 cts       
+Proxi:  3106 cts       
+Proxi:  3053 cts       
+Proxi:  3015 cts       
+Proxi:  2977 cts       
+Proxi:  2979 cts       
+Proxi:  3012 cts       
+Proxi:  2974 cts       
+Proxi:  3003 cts       
+Proxi:  3074 cts       
+Proxi:  3078 cts       
+Proxi:  3025 cts       
+Proxi:  3116 cts       
+Proxi:  3072 cts       
+Proxi:  2968 cts       
+Proxi:  2987 cts       
+Proxi:  2988 cts       
+Proxi:  3001 cts       
+Proxi:  3014 cts       
+Proxi:  3025 cts       
+Proxi:  2978 cts       
+Proxi:  3030 cts       
+Proxi:  3021 cts       
+Proxi:  3009 cts       
+Proxi:  3063 cts       
+Proxi:  3007 cts       
+Proxi:  3055 cts       

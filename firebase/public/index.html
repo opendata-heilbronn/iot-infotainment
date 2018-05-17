@@ -38,10 +38,13 @@
         body>section:first-of-type>p {
             width: 20vh;
             border-radius: 10vh;
+            border-radius: 10vh;
         }
 
         body>section>p {
             height: 20vh;
+            min-height: 100px;
+            min-width: 100px;
             font-size: 1.5rem;
             vertical-align: middle;
             display: flex;
@@ -50,6 +53,7 @@
             justify-content: center;
             align-content: center;
             text-align: center;
+            margin: 6vh;
         }
 
         body>section:first-of-type>p:nth-of-type(odd) {
@@ -67,8 +71,12 @@
 <body>
     <section>
         <p>Not-Aus</p>
-        <p>I</p>
-        <p>O</p>
+        <p style="font-size: 7rem">I</p>
+        <p>
+            <svg height="100" width="100">
+                <circle cx="50" cy="50" r="40" stroke="white" stroke-width="10" fill="none" />
+            </svg>
+        </p>
     </section>
     <section>
         <p>Der Not-Aus Schalter wurde
@@ -119,7 +127,7 @@
         }, function (error) {
             console.log(error);
         })
-        database.ref("cowoEmergency/EmergencyHistory").on('value', function (snapshot) {
+        database.ref("cowoEmergency/emergencyHistory").on('value', function (snapshot) {
             console.log(snapshot.numChildren());
             emergency = snapshot.numChildren();
             document.getElementById("NotAus").innerHTML = emergency;
