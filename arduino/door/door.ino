@@ -2,9 +2,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
 #include <ArduinoOTA.h>
 
 #include "config.h"
@@ -16,12 +13,8 @@
 WiFiClient client;
 #define SERIALOUT 1
 
-DHT dht(D3, DHT22);
-
 void setup() {
-  pinMode(D1, INPUT_PULLUP);
-
-  dht.begin();
+  pinMode(1, INPUT_PULLUP);
 
   if (SERIALOUT) {
     Serial.begin(9600);
@@ -154,12 +147,12 @@ int lastState;
 
 void readAndSendLocalDoor() {
 
-    if (!digitalRead(D1) && lastState == Close) {
+    if (!digitalRead(1) && lastState == Close) {
       sendDoorSensor(Open);
       lastState = Open;
       Serial.println("Door open");
     }
-    else if (digitalRead(D1) && lastState == Open) {
+    else if (digitalRead(1) && lastState == Open) {
       sendDoorSensor(Close);
       lastState = Close;
       Serial.println("Door close");
@@ -168,27 +161,12 @@ void readAndSendLocalDoor() {
 
 unsigned long lastLocalSensorTime = 0;
 
-void readAndSendLocalSensor() {
-    float humidity = dht.readHumidity();
-    float temperature = dht.readTemperature();
-    lastLocalSensorTime = millis();
-    if(!(isnan(humidity)) && !(isnan(temperature))) {
-      sendTempSensor(temperature, humidity);
-    }
-    if(SERIALOUT) {
-      Serial.print("Temp: ");
-      Serial.println(temperature);
-      Serial.print("%:    ");
-      Serial.println(humidity);
-    }
-}
-
 void setupOTA()
 {
   // Port defaults to 8266
   ArduinoOTA.setPort(8266);
   // Hostname defaults to MAC address
-  ArduinoOTA.setHostname(("Emergency-ESP " + WiFi.macAddress()).c_str());
+  ArduinoOTA.setHostname(("Door-ESP " + WiFi.macAddress()).c_str());
   // No authentication by default
   //ArduinoOTA.setPassword(OTA_pass);
   ArduinoOTA.begin();
@@ -199,10 +177,5 @@ void loop() {
   readAndSendLocalDoor(); 
   ArduinoOTA.handle();
   
-  delay(500);
-  
-  long diff = lastLocalSensorTime - millis();
-  if (abs(diff) > 60*1000) {
-    readAndSendLocalSensor();
-  }
+  delay(50);
 }

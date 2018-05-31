@@ -6,7 +6,7 @@ var app = express();
 module.exports = function (req, res) {
     app.use(bodyParser.json());
 
-    var timeserie = require('./series');
+    var timeserie = require('./series.json');
 
     var now = Date.now();
 
